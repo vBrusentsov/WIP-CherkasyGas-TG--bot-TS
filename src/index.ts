@@ -1,24 +1,34 @@
-import {Bot, InlineKeyboard} from "grammy";
+import {Bot, Composer, Context, InlineKeyboard} from "grammy";
 import {environmentConfig} from "./config";
 import {mainMenu} from "./menus/main.menu";
-import {managingPersonalAccountMenu} from "./menus/managing-personal-account.menu"
+import {emptySessionStartCommand} from "./composer/emptySession.composer";
+
 
 
 (async () => {
-
+    const session = {personalAccount : [/*{number: 7200054646, name: 'My'}, {number: 7200055446, name: 'Dima'}*/]};
     const bot = new Bot(environmentConfig.BOT_TOKEN);
-
+    bot.use((ctx, next)=> {
+        //@ts-ignore
+        ctx.session = session;
+        return next()
+    })
     bot.use(mainMenu);
 
-    bot.command('start', async (ctx) => {
-        if ("first_name" in ctx.msg.chat) {
-            await ctx.reply(
-                ` Доброго дня ${ctx.msg.chat.first_name} ${ctx.msg.chat.last_name}.
-Вас вітає телеграм бот АТ "Черкасигаз".
-Якщо ви тільки почали викристовувати наший телеграм-бот то вам потрібно для початку натиснути на кнопку 
-"Додати особовий рахнуок"`
-                , { reply_markup: mainMenu});
-        }
-    });
+    const emptySessionComposer = new Composer();
+    //@ts-ignore
+    const emptyComposer = emptySessionComposer.filter((context: Context) => context.session.length === 0);
+    console.log(emptyComposer);
+
+    const notEmptySessionComposer = new Composer();
+    //@ts-ignore
+    const notEmptyComposer = notEmptySessionComposer.filter((context: Context) => context.session.length === 0);
+    console.log(notEmptyComposer);
+
+    emptyComposer.use(emptySessionStartCommand)
+
+    bot.use(emptySessionComposer);
+    bot.use(notEmptySessionComposer)
+
     bot.start();
 })();
