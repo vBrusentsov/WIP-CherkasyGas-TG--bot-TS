@@ -19,3 +19,14 @@ registrationPersonalAccount.on('message:text', async context => {
     context.session.step = 'namePersonalAccount'
     await context.reply('Вкажіть імя для позначення особового рахунку');
 });
+
+const namePersonalAccount = router.route('namePersonalAccount');
+
+namePersonalAccount.on('message:text', async context => {
+    const name = context.message.text;
+    console.log(name);
+    await context.reply(`Особовий рахунок буде збережено під іменем ${name}`);
+});
+
+
+
