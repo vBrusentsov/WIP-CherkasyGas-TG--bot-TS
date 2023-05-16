@@ -11,7 +11,8 @@ registrationPersonalAccount.on('message:text', async context => {
         personalAccount.length < 11) {
         await context.reply(`Ваш особовмй рахунок ${personalAccount}`);
     } else {
-        await context.reply("Ви ввели невірний особовий рахунок");
+        await context.reply("Ви ввели невірний особовий рахунок." +
+            "Особовий рахунок має бути більше ніж 8 цифр");
         return;
     }
 
