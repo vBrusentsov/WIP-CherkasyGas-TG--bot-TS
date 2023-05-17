@@ -5,5 +5,6 @@ export interface PersonalAccount {
 
 export interface SessionData {
     step: string;
+    newPersonalAccount: PersonalAccount;
     personalAccount: PersonalAccount[]; 
 }

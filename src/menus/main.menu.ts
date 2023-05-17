@@ -10,6 +10,8 @@ export const startEmptySessionMenu = new Menu<GrammyContext>('start-empty-sessio
     context.session.step = 'registrationPersonalAccount'
 });
 
+export const backToStartMenu = new Menu<GrammyContext>('back-to-start-menu')
+    .text('Повернутись до попереднього меню')
 
 export const personalAccountsManager = new Menu('personalAccountsManager-menu')
     .text('Додати особовий рахунок').row().text('Повернутись до попереднього меню', async context => {

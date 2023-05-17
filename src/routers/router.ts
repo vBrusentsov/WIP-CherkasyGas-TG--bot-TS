@@ -1,5 +1,8 @@
 import { Router } from '@grammyjs/router';
 import {GrammyContext} from "../context";
+import {sendStartMessageMiddleware} from "../middleware/sendStartMessage.middleware";
+import {personalAccountsManager} from "../menus/main.menu";
+import {PersonalAccount} from "../interfaces/session.interfaces";
 
 export const router = new Router<GrammyContext>(context => context.session.step);
 const registrationPersonalAccount = router.route('registrationPersonalAccount');
@@ -10,9 +13,9 @@ registrationPersonalAccount.on('message:text', async context => {
         personalAccount.length > 8 &&
         personalAccount.length < 11) {
         await context.reply(`Ваш особовмй рахунок ${personalAccount}`);
+        context.session.newPersonalAccount.number = +personalAccount;
     } else {
-        await context.reply("Ви ввели невірний особовий рахунок." +
-            "Особовий рахунок має бути більше ніж 8 цифр");
+        await context.reply("Ви ввели невірний особовий рахунок.");
         return;
     }
 
@@ -25,7 +28,13 @@ const namePersonalAccount = router.route('namePersonalAccount');
 namePersonalAccount.on('message:text', async context => {
     const name = context.message.text;
     console.log(name);
-    await context.reply(`Особовий рахунок буде збережено під іменем ${name}`);
+    context.session.newPersonalAccount.name = name;
+    await context.reply(`Особовий рахунок буде збережено таким чином:
+    ${context.session.newPersonalAccount.number} - ${context.session.newPersonalAccount.name}`);
+    console.log(context.session.newPersonalAccount);
+    context.session.personalAccount.push(context.session.newPersonalAccount);
+    console.log(context.session.personalAccount);
+    await sendStartMessageMiddleware(context);
 });
 
 

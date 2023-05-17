@@ -4,12 +4,18 @@ import {startNotEmptySessionMenu, startEmptySessionMenu} from "./menus/main.menu
 import {emptySessionStartCommand} from "./composer/emptySession.composer";
 import { notEmptySessionStartCommand } from "./composer/notEmptySession.composer";
 import { NextFunction, GrammyContext } from "./context";
+import {PersonalAccount} from "./interfaces/session.interfaces";
 import { router } from './routers/router'
+import {stringify} from "querystring";
 
 (async () => {
     const session = {
         step: 'idle',
-        personalAccount : [/*{number: 7200054646, name: 'My'}, {number: 7200055446, name: 'Dima'}*/ ],
+        newPersonalAccount: {
+            number: 0,
+            name: ''
+        },
+        personalAccount : [] ,
     };
     const bot = new Bot<GrammyContext>(environmentConfig.BOT_TOKEN);
     bot.use((context: GrammyContext, next: NextFunction)=> {
