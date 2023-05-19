@@ -4,5 +4,5 @@ import {Context} from "grammy";
 
 export const sendStartMessageMiddleware = async (context: Context) => {
 
-    await context.reply(notEmptySessionStartCommandText, {reply_markup: startNotEmptySessionMenu});
+    await context.reply(notEmptySessionStartCommandText, {reply_markup: startNotEmptySessionMenu, parse_mode: "HTML"});
 }

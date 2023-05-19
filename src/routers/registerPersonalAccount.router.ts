@@ -1,21 +1,21 @@
 import { Router } from '@grammyjs/router';
 import {GrammyContext} from "../context";
 import {sendStartMessageMiddleware} from "../middleware/sendStartMessage.middleware";
-import {personalAccountsManager} from "../menus/main.menu";
+import { personalAccountsManagerMenu } from "../menus/main.menu";
 import {PersonalAccount} from "../interfaces/session.interfaces";
 
-export const router = new Router<GrammyContext>(context => context.session.step);
-const registrationPersonalAccount = router.route('registrationPersonalAccount');
+export const registerPersonalAccountRouter = new Router<GrammyContext>(context => context.session.step);
+const registrationPersonalAccount = registerPersonalAccountRouter.route('registrationPersonalAccount');
 registrationPersonalAccount.on('message:text', async context => {
     console.log(context.message.text);
     const personalAccount = context.message.text;
     if (!Number.isNaN(+personalAccount) &&
         personalAccount.length > 8 &&
         personalAccount.length < 11) {
-        await context.reply(`Ваш особовмй рахунок ${personalAccount}`);
+        await context.reply(`Ваш особовий рахунок ${personalAccount}`);
         context.session.newPersonalAccount.number = +personalAccount;
     } else {
-        await context.reply("Ви ввели невірний особовий рахунок.");
+        await context.reply("Ви ввели невірний особовий рахунок. Особовий рахунок має містити від 8 до 11 цифр");
         return;
     }
 
@@ -23,7 +23,7 @@ registrationPersonalAccount.on('message:text', async context => {
     await context.reply('Вкажіть імя для позначення особового рахунку');
 });
 
-const namePersonalAccount = router.route('namePersonalAccount');
+const namePersonalAccount = registerPersonalAccountRouter.route('namePersonalAccount');
 
 namePersonalAccount.on('message:text', async context => {
     const name = context.message.text;

@@ -4,9 +4,7 @@ import {startNotEmptySessionMenu, startEmptySessionMenu} from "./menus/main.menu
 import {emptySessionStartCommand} from "./composer/emptySession.composer";
 import { notEmptySessionStartCommand } from "./composer/notEmptySession.composer";
 import { NextFunction, GrammyContext } from "./context";
-import {PersonalAccount} from "./interfaces/session.interfaces";
-import { router } from './routers/router'
-import {stringify} from "querystring";
+import { registerPersonalAccountRouter } from './routers/registerPersonalAccount.router'
 
 (async () => {
     const session = {
@@ -39,6 +37,6 @@ import {stringify} from "querystring";
 
     bot.use(emptySessionComposer);
     bot.use(notEmptySessionComposer);
-    bot.use(router);
+    bot.use(registerPersonalAccountRouter);
     bot.start();
 })();
