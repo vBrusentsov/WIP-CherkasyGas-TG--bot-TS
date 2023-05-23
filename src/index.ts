@@ -5,6 +5,7 @@ import {emptySessionStartCommand} from "./composer/emptySession.composer";
 import { notEmptySessionStartCommand } from "./composer/notEmptySession.composer";
 import { NextFunction, GrammyContext } from "./context";
 import { registerPersonalAccountRouter } from './routers/registerPersonalAccount.router'
+import {deletePersonalAccountRouter} from "./routers/deletePersonalAccount.router";
 
 (async () => {
     const session = {
@@ -13,7 +14,7 @@ import { registerPersonalAccountRouter } from './routers/registerPersonalAccount
             number: 0,
             name: ''
         },
-        personalAccount : [] ,
+        personalAccount : [{name: 'Vlad', number: 1234578346}, {name: 'Dima', number: 454254574633}] ,
     };
     const bot = new Bot<GrammyContext>(environmentConfig.BOT_TOKEN);
     bot.use((context: GrammyContext, next: NextFunction)=> {
@@ -38,5 +39,7 @@ import { registerPersonalAccountRouter } from './routers/registerPersonalAccount
     bot.use(emptySessionComposer);
     bot.use(notEmptySessionComposer);
     bot.use(registerPersonalAccountRouter);
+    bot.use(deletePersonalAccountRouter)
+
     bot.start();
 })();

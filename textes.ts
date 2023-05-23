@@ -1,3 +1,6 @@
+import {personalAccountList} from "./utils";
+import {GrammyContext} from "./src/context";
+
 export const emptySessionStartCommandText = `<b>Доброго дня. Вас вітає телеграм бот АТ "Черкасигаз".</b>
 Нажаль ми не знайшли вашого особового рахунку.
 Для початку вам потрібно додати ваш особовий рахунок, щоб це зробити натисніть на кнопку
@@ -10,3 +13,5 @@ export const notEmptySessionStartCommandText = `<b>Доброго дня. Вас
 Якщо ви хочете передати показники лічильника, вам потрібно натиснути на кнопку:
 "Передача показників лічильника".`.trim();
 
+export const personalAccountListText = `В цьому меню ви можете додавати або видаляти ваші особові рахунки.
+Ось перелік уже доданий вами особових рахунків:`.trim()
