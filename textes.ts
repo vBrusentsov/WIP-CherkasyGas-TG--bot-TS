@@ -1,6 +1,3 @@
-import {personalAccountList} from "./utils";
-import {GrammyContext} from "./src/context";
-
 export const emptySessionStartCommandText = `<b>Доброго дня. Вас вітає телеграм бот АТ "Черкасигаз".</b>
 Нажаль ми не знайшли вашого особового рахунку.
 Для початку вам потрібно додати ваш особовий рахунок, щоб це зробити натисніть на кнопку

@@ -1,7 +1,8 @@
+import {personalAccountListText} from "./textes";
 import {GrammyContext} from "./src/context";
 
-export async function personalAccountList (context: GrammyContext) {
-    let list = '';
+export const getPersonalAccountList = ((context: GrammyContext) => {
     return context.session.personalAccount.map(obj => {
-        return `\n${obj.name}- ${obj.number}` ;
-})}
+        return `\n${obj.name}- ${obj.number}`;
+
+})});

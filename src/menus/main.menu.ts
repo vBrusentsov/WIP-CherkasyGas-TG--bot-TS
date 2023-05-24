@@ -1,10 +1,11 @@
 import {Menu, MenuRange} from "@grammyjs/menu";
 import {GrammyContext} from "../context";
-import {personalAccountList} from '../../utils'
+import {getPersonalAccountList} from '../../utils'
 import {
     notEmptySessionStartCommandText,
     emptySessionStartCommandText,
     personalAccountListText} from "../../textes";
+import {sendStartMessageMiddleware} from "../middleware/sendStartMessage.middleware";
 
 
 
@@ -20,8 +21,7 @@ export const backToStartMenu = new Menu<GrammyContext>('back-to-start-menu')
 export const startNotEmptySessionMenu = new Menu<GrammyContext>('start-not-empty-session-menu')
     .text('Керування особовимим рахунками', async context => {
 
-        await context.editMessageText(personalAccountListText);
-        console.log((JSON.stringify(personalAccountList(context))));
+        await context.editMessageText(personalAccountListText + getPersonalAccountList(context));
         context.menu.nav('personalAccountsManager-menu');
     }).row()
     .text('Передати показники лічильника', async context => {
@@ -49,16 +49,21 @@ export const deletePersonalAccount = new Menu<GrammyContext>('deletePersonalAcco
         const range = new MenuRange<GrammyContext>();
         for (let i = 0; i < context.session.personalAccount.length; i++) {
             const listPersonalAccount =`${ context.session.personalAccount[i].name} - ${ context.session.personalAccount[i].number}`;
-            console.log(listPersonalAccount);
             range
-                .text(listPersonalAccount, (context) => context.reply(`You chose ${listPersonalAccount}`))
+                .text(listPersonalAccount, async (context) => {
+                    await context.reply(`You chose ${listPersonalAccount}`);
+                    const personalAccountFromDeleting = listPersonalAccount.slice(listPersonalAccount.indexOf('-')+2);
+                    context.session.personalAccount.splice(context.session.personalAccount.findIndex(obj => obj.number === +personalAccountFromDeleting));
+                    await sendStartMessageMiddleware(context);
+                })
                 .row();
+
         }
         return range;
     })
     .text('Повернутись до попереднього меню', async context => {
         context.menu.back();
-        await context.editMessageText(personalAccountListText);
+        await context.editMessageText(personalAccountListText + getPersonalAccountList(context));
     });
 
 export const counterReadingMenu = new Menu<GrammyContext>('counterReading-menu')

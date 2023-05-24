@@ -11,8 +11,9 @@ import {deletePersonalAccountRouter} from "./routers/deletePersonalAccount.route
     const session = {
         step: 'idle',
         newPersonalAccount: {
+            name: '',
             number: 0,
-            name: ''
+
         },
         personalAccount : [{name: 'Vlad', number: 1234578346}, {name: 'Dima', number: 454254574633}] ,
     };

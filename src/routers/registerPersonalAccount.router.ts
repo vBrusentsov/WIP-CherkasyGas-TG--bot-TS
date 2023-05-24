@@ -30,10 +30,8 @@ namePersonalAccount.on('message:text', async context => {
     console.log(name);
     context.session.newPersonalAccount.name = name;
     await context.reply(`Особовий рахунок буде збережено таким чином:
-    ${context.session.newPersonalAccount.number} - ${context.session.newPersonalAccount.name}`);
-    console.log(context.session.newPersonalAccount);
+    ${context.session.newPersonalAccount.name} - ${context.session.newPersonalAccount.number}`);
     context.session.personalAccount.push({...context.session.newPersonalAccount});
-    console.log(context.session.personalAccount);
     await sendStartMessageMiddleware(context);
 });
 

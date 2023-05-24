@@ -1,6 +1,6 @@
 export interface PersonalAccount {
-    number: number;
     name: string;
+    number: number;
 }
 
 export interface SessionData {
