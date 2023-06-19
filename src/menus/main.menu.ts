@@ -4,7 +4,8 @@ import {getPersonalAccountList} from '../../utils'
 import {
     notEmptySessionStartCommandText,
     emptySessionStartCommandText,
-    personalAccountListText} from "../../textes";
+    personalAccountListText,
+    counterReadingText} from "../../textes";
 import {sendStartMessageMiddleware} from "../middleware/sendStartMessage.middleware";
 
 
@@ -15,18 +16,16 @@ export const startEmptySessionMenu = new Menu<GrammyContext>('start-empty-sessio
     context.session.step = 'registrationPersonalAccount'
 });
 
-export const backToStartMenu = new Menu<GrammyContext>('back-to-start-menu')
-    .text('Повернутись до попереднього меню')
 
 export const startNotEmptySessionMenu = new Menu<GrammyContext>('start-not-empty-session-menu')
     .text('Керування особовимим рахунками', async context => {
-
         await context.editMessageText(personalAccountListText + getPersonalAccountList(context));
         context.menu.nav('personalAccountsManager-menu');
     }).row()
     .text('Передати показники лічильника', async context => {
-        await context.editMessageText(`Тут буде вибір особових рахунків на кнопочках`);
-        context.menu.nav('counterReading-menu');
+        await context.editMessageText(counterReadingText);
+        context.menu.nav('receivingCounterReading-menu');
+
     })
 
 export const personalAccountsManagerMenu = new Menu<GrammyContext>('personalAccountsManager-menu')
@@ -43,37 +42,48 @@ export const personalAccountsManagerMenu = new Menu<GrammyContext>('personalAcco
         await context.editMessageText(notEmptySessionStartCommandText, {parse_mode: "HTML"});
     });
 
-export const deletePersonalAccount = new Menu<GrammyContext>('deletePersonalAccount-menu')
-    .dynamic((context) => {
-        // Generate a part of the menu dynamically!
-        const range = new MenuRange<GrammyContext>();
+
+export const receivingCounterReadingWithButton = new Menu<GrammyContext>('receivingCounterReading-menu')
+    .dynamic(context => {
+        const rangeReceivingCounterReading = new MenuRange<GrammyContext>();
         for (let i = 0; i < context.session.personalAccount.length; i++) {
             const listPersonalAccount =`${ context.session.personalAccount[i].name} - ${ context.session.personalAccount[i].number}`;
-            range
+            rangeReceivingCounterReading.text(listPersonalAccount, async context => {
+                await context.reply(`Цей: ${listPersonalAccount} особовий рахунок буде використано для передачі покизнику лічильника.`);
+            })
+                .row()
+        }
+        return rangeReceivingCounterReading
+    })
+    .text('Повернутись до попереднього меню', async context => {
+        context.menu.back();
+        await context.editMessageText(notEmptySessionStartCommandText, {parse_mode: "HTML"});
+    })
+
+export const deletePersonalAccountWithButton = new Menu<GrammyContext>('deletePersonalAccount-menu')
+    .dynamic(context => {
+        // Generate a part of the menu dynamically!
+        const rangeDeletePersonalAccountInSession = new MenuRange<GrammyContext>();
+        for (let i = 0; i < context.session.personalAccount.length; i++) {
+            const listPersonalAccount =`${ context.session.personalAccount[i].name} - ${ context.session.personalAccount[i].number}`;
+            rangeDeletePersonalAccountInSession
                 .text(listPersonalAccount, async (context) => {
-                    await context.reply(`You chose ${listPersonalAccount}`);
+                    await context.reply(`Вибраний вами особовий рахунок буде видалено ${listPersonalAccount}. Дякую`);
                     const personalAccountFromDeleting = listPersonalAccount.slice(listPersonalAccount.indexOf('-')+2);
-                    context.session.personalAccount.splice(context.session.personalAccount.findIndex(obj => obj.number === +personalAccountFromDeleting));
+                    context.session.personalAccount.splice(context.session.personalAccount.findIndex(obj => obj.number === +personalAccountFromDeleting), 1);
                     await sendStartMessageMiddleware(context);
                 })
                 .row();
 
         }
-        return range;
+        return rangeDeletePersonalAccountInSession;
     })
     .text('Повернутись до попереднього меню', async context => {
         context.menu.back();
         await context.editMessageText(personalAccountListText + getPersonalAccountList(context));
     });
 
-export const counterReadingMenu = new Menu<GrammyContext>('counterReading-menu')
-    .text('Передати показники лічиника').row()
-    .text('Повернутись до попередьного меню', async context => {
-        context.menu.back();
-        await context.editMessageText(notEmptySessionStartCommandText);
-    });
-
 
 startNotEmptySessionMenu.register(personalAccountsManagerMenu);
-startNotEmptySessionMenu.register(counterReadingMenu);
-personalAccountsManagerMenu.register(deletePersonalAccount);
+startNotEmptySessionMenu.register(receivingCounterReadingWithButton);
+personalAccountsManagerMenu.register(deletePersonalAccountWithButton);

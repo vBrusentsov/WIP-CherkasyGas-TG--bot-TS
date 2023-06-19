@@ -11,11 +11,12 @@ registrationPersonalAccount.on('message:text', async context => {
     const personalAccount = context.message.text;
     if (!Number.isNaN(+personalAccount) &&
         personalAccount.length > 8 &&
-        personalAccount.length < 11) {
+        personalAccount.length < 10) {
+        console.log(context.message.from);
         await context.reply(`Ваш особовий рахунок ${personalAccount}`);
         context.session.newPersonalAccount.number = +personalAccount;
     } else {
-        await context.reply("Ви ввели невірний особовий рахунок. Особовий рахунок має містити від 8 до 11 цифр");
+        await context.reply("Ви ввели невірний особовий рахунок. Особовий рахунок має містити від 9 до 10 цифр");
         return;
     }
 

@@ -1,27 +1,25 @@
-import {Bot, Composer, Context, InlineKeyboard} from "grammy";
+import {Bot, Composer, Context, InlineKeyboard, session} from "grammy";
 import {environmentConfig} from "./config";
 import {startNotEmptySessionMenu, startEmptySessionMenu} from "./menus/main.menu";
 import {emptySessionStartCommand} from "./composer/emptySession.composer";
 import { notEmptySessionStartCommand } from "./composer/notEmptySession.composer";
 import { NextFunction, GrammyContext } from "./context";
 import { registerPersonalAccountRouter } from './routers/registerPersonalAccount.router'
-import {deletePersonalAccountRouter} from "./routers/deletePersonalAccount.router";
+import {SessionData} from "./interfaces/session.interfaces";
 
 (async () => {
-    const session = {
-        step: 'idle',
-        newPersonalAccount: {
-            name: '',
-            number: 0,
-
-        },
-        personalAccount : [{name: 'Vlad', number: 1234578346}, {name: 'Dima', number: 454254574633}] ,
-    };
     const bot = new Bot<GrammyContext>(environmentConfig.BOT_TOKEN);
-    bot.use((context: GrammyContext, next: NextFunction)=> {
-        context.session = session;
-        return next();
-    });
+    bot.use(session({
+        initial: () => <SessionData>({
+            step: 'idle',
+            newPersonalAccount: {
+                name: '',
+                number: 0,
+
+            },
+            personalAccount : [],
+        })
+    }));
     bot.use(startEmptySessionMenu);
     bot.use(startNotEmptySessionMenu);
 
@@ -40,7 +38,6 @@ import {deletePersonalAccountRouter} from "./routers/deletePersonalAccount.route
     bot.use(emptySessionComposer);
     bot.use(notEmptySessionComposer);
     bot.use(registerPersonalAccountRouter);
-    bot.use(deletePersonalAccountRouter)
 
-    bot.start();
+   await bot.start();
 })();
